@@ -1,0 +1,55 @@
+{
+  "name": "dependency",
+  "displayName": "dependency",
+  "description": "dependency graph",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.81.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dependency.cmdAnalyzeDependencies",
+        "title": "analyze dependencies"
+      },
+      {
+        "command": "dependency.cmdGetDependencies",
+        "title": "查看依赖"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+				{
+					"command": "dependency.cmdGetDependencies",
+					"group": "navigation"
+				}
+			]
+    }
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "node ./test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.81.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3",
+    "@vscode/test-electron": "^2.3.2",
+    "@babel/parser": "^7.21.4",
+    "enhanced-resolve": "^5.12.0",
+    "recast": "^0.22.0",
+    "vue": "2.6.12",
+    "vue-template-compiler": "2.6.12"
+  }
+}
