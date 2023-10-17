@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const vscode = require("vscode");
+const config = require("../config");
 
 const fsPromise = fs.promises;
 
@@ -94,6 +95,26 @@ async function getFileData(_absPath) {
   return data;
 }
 
+/**
+ * 判断文件类型是否支持
+ */
+function checkFileType(ext) {
+  return config.fileType.some((item) => ext === item);
+}
+
+/**
+ * 判断文件是否在配置的入口内
+ */
+function checkInEntry(_absPath) {
+  const workspacePath = getWorkspacePath();
+
+  return config.entry.some(entry => {
+    const entryAbsPath = path.join(workspacePath, entry); // 入口的绝对路径
+
+    return _absPath.includes(entryAbsPath);
+  })
+}
+
 module.exports = {
   readDir,
   getStats,
@@ -102,5 +123,7 @@ module.exports = {
   checkPathExists,
   getWorkspacePath,
   getFileData,
-  mkdir
+  mkdir,
+  checkFileType,
+  checkInEntry
 };

@@ -1,5 +1,5 @@
 const config = require("../config/index");
-const fsUtils = require("./fsUtils");
+const fsUtils = require("../utils/fsUtils");
 const path = require("path");
 const vueTemplateCompiler = require("vue-template-compiler");
 const recast = require("recast");
@@ -95,8 +95,9 @@ function jsParser(_codeString) {
  * @param {String} _absPath 当前文件的绝对路径
  */
 function resolvePath(_importPath, _absPath) {
+  const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
+
   if (!resolve) {
-    const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
     const alias = {};
 
     // 将配置中的 alias 相对路径处理成绝对路径
@@ -114,7 +115,7 @@ function resolvePath(_importPath, _absPath) {
     const dirName = path.dirname(_absPath); // 当前文件所在文件夹的绝对路径
     const importAbsPath = resolve(dirName, _importPath);
 
-    return importAbsPath;
+    return importAbsPath.replace(workspacePath, "");
   } catch (err) {
     console.log(`解析依赖文件路径失败：${_importPath}`);
   }

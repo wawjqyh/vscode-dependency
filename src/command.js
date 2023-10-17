@@ -10,7 +10,9 @@ const cmdAnalyzeDependencies = vscode.commands.registerCommand(
 
 const cmdGetDependencies = vscode.commands.registerCommand(
   "dependency.cmdGetDependencies",
-  webview.webviewDependency
+  uri => {
+    webview.webviewDependency(uri, "getDependencies");
+  }
 );
 
 module.exports = {
