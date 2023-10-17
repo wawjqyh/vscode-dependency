@@ -24,9 +24,7 @@
   },
   "globals": {
     "window": false,
-    "staticPath": false,
-    "operation": false,
-    "data": false,
-    "target": false
+    "store": false,
+    "echarts": false,
   }
 }

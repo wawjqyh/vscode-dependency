@@ -70,14 +70,17 @@ function getWebviewContent(panel, target, operation, dataStr) {
       <link rel="stylesheet" type="text/css" href="${staticPath}/css/index.css" />
     </head>
     <body>
-      <div class="test">2333</div>
+      <div id="chart"></div>
 
       <script>
-        const staticPath = "${staticPath}";
-        const operation = "${operation}";
-        const data = ${dataStr};
-        const target = "${target}";
+        const store = {
+          staticPath: "${staticPath}",
+          operation: "${operation}",
+          rootData: ${dataStr},
+          target: "${target}"
+        };
       </script>
+      <script src="${staticPath}/scripts/echarts.min.js"></script>
       <script src="${staticPath}/scripts/index.js"></script>
     </body>
     </html>

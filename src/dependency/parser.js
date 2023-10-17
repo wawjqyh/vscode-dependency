@@ -14,6 +14,7 @@ let resolve = null;
  * @param { String } _ext
  */
 async function getDependency(_absPath, _ext) {
+  const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
   let importList = [];
   const content = await fsUtils.readFile(_absPath); // 读取文件内容
   const codeString = content.toString();
@@ -29,9 +30,9 @@ async function getDependency(_absPath, _ext) {
   const dependencies = importList.reduce((res, item) => {
     const itemAbsPath = resolvePath(item, _absPath);
 
-    // 不记录第三方包
-    if (item && itemAbsPath && !itemAbsPath.includes("node_modules")) {
-      res.push(itemAbsPath);
+    // 不记录第三方包 | 非配置的入口目录下的文件
+    if (item && itemAbsPath && !itemAbsPath.includes("node_modules") && fsUtils.checkInEntry(itemAbsPath)) {
+      res.push(itemAbsPath.replace(workspacePath, ""));
     }
 
     return res;
@@ -115,7 +116,8 @@ function resolvePath(_importPath, _absPath) {
     const dirName = path.dirname(_absPath); // 当前文件所在文件夹的绝对路径
     const importAbsPath = resolve(dirName, _importPath);
 
-    return importAbsPath.replace(workspacePath, "");
+    // return importAbsPath.replace(workspacePath, "");
+    return importAbsPath;
   } catch (err) {
     console.log(`解析依赖文件路径失败：${_importPath}`);
   }
