@@ -1,54 +1,64 @@
 function initData() {
   if (store.operation === "getDependencies") {
-    window.depMap = new Map();
-
-    store.rootData.forEach((item) => {
-      window.depMap.set(item.relativePath, item);
+    store.rootData.forEach((_fileItem) => {
+      store.rootDataDict[_fileItem.relativePath] = _fileItem;
     });
   }
 }
 
 function sankeyData() {
-  const dataSet = new Set();
-  const data = [];
-  const links = [];
+  const linkDataDict = {};
+  const dataDict = new Set(); // 校验重复文件
+  const linkDict = new Set(); // 校验重复关系
+  const data = []; // echarts data
+  const links = []; // echarts links
 
-  const genData = (item) => {
-    let value = 0;
+  // 生成 chearts 的 data 和 links 配置
+  const genOptions = (_fileInfo) => {
+    let val = 0;
 
-    if (!dataSet.has(item.relativePath)) {
-      data.push({ name: item.relativePath });
-      dataSet.add(item.relativePath);
+    // 生成 data 配置（需要去重）
+    if (!dataDict.has(_fileInfo.relativePath)) {
+      data.push({ name: _fileInfo.relativePath });
+      dataDict.add(_fileInfo.relativePath);
     }
 
-    if (item.dependency?.length) {
-      item.dependency.forEach((dep) => {
-        const linksObj = {
-          source: item.relativePath,
-          target: dep,
-          value: 1,
-        };
-        links.push(linksObj);
+    if (_fileInfo.dependency?.length) {
+      _fileInfo.dependency.forEach((_childPath) => {
+        let value = 0;
+        const source = _fileInfo.relativePath;
+        const target = _childPath;
+        const linkData = { source, target };
 
-        if (window.depMap.has(dep)) {
-          // linksObj.value = genData(window.depMap.get(dep));
+        // 去重
+        if (linkDict.has(`${source}${target}`)) {
+          return;
+        } else {
+          linkDict.add(`${source}${target}`);
         }
 
-        value ++;
+        // 生成 links 配置
+        links.push(linkData);
+
+        if (store.rootDataDict[_childPath]) {
+          value = genOptions(store.rootDataDict[_childPath]) || 1;
+          val = val + value; // 累加父级的 value
+        }
+
+        // 设置 links value
+        linkData.value = value; // 当前 link 的 value
       });
     } else {
-      value = 1;
+      val = 1;
     }
 
-    return value;
+    return val;
   };
 
-  if (window.depMap.has(store.target)) {
-    genData(window.depMap.get(store.target));
+  // 获取入口的文件信息，从入口文件开始查找依赖
+  if (store.rootDataDict[store.target]) {
+    genOptions(store.rootDataDict[store.target]);
   }
-
-  console.log(data);
-  console.log(links);
 
   return { data, links };
 }
@@ -57,6 +67,10 @@ function sankeyInit() {
   const chart = echarts.init(window.document.getElementById("chart"));
   const { data, links } = sankeyData();
   const options = {
+    /* tooltip: {
+      trigger: "item",
+      triggerOn: "mousemove",
+    }, */
     series: {
       type: "sankey",
       layout: "none",
@@ -64,6 +78,18 @@ function sankeyInit() {
         focus: "adjacency",
       },
       nodeAlign: "left",
+      draggable: false,
+      selectedMode: "single",
+      select: {
+        disabled: false,
+      },
+      label: {
+        formatter(params) {
+          return params.name.split("/").pop();
+        },
+        color: "#fff",
+        shadowColor: "transparent",
+      },
       data,
       links,
     },

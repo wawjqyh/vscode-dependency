@@ -77,6 +77,7 @@ function getWebviewContent(panel, target, operation, dataStr) {
           staticPath: "${staticPath}",
           operation: "${operation}",
           rootData: ${dataStr},
+          rootDataDict: {},
           target: "${target}"
         };
       </script>
