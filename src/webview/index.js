@@ -79,6 +79,7 @@ async function webviewDependency(context, uri, operation) {
       vscode.ViewColumn.One, // 给新的webview面板一个编辑器视图
       {
         enableScripts: true,
+        retainContextWhenHidden: true,
       }
     );
 
@@ -157,6 +158,11 @@ function getWebviewContent(panel, target, operation, dataStr) {
       <div class="chart-wrapper" 
         style="${operation === "getDisused" ? "display: none" : ""}">
         <div id="chart"></div>
+
+        <div class="btn-wrapper">
+          <div class="btn-item" id="btnTree">树图</div>
+          <div class="btn-item" id="btnSankey">桑葚图</div>
+        </div>
       </div>
 
       <div class="disused-wrapper"

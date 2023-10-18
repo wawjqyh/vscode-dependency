@@ -1,8 +1,5 @@
 function treeInit() {
-  const chart = echarts.init(window.document.getElementById("chart"));
   const data = getTreeData();
-
-  console.log(data);
 
   const options = {
     tooltip: {
@@ -50,17 +47,6 @@ function treeInit() {
   };
 
   chart.setOption(options);
-
-  chart.on("dblclick", "series.tree.label", (e) => {
-    const fileData = store.rootDataDict[e.name];
-
-    if (fileData) {
-      window.vscode.postMessage({
-        command: "openFile",
-        url: fileData.absolutePath,
-      });
-    }
-  });
 }
 
 function getTreeData() {
@@ -73,13 +59,9 @@ function getTreeData() {
   ];
 
   const genOptions = (_treeNode) => {
-    let children = [];
-    const fileData = store.rootDataDict[_treeNode.name];
-
-    if (store.operation === "getDependencies")
-      children = fileData.children || [];
-    if (store.operation === "getBeDependencies")
-      children = fileData.parent || [];
+    const fileData = JSON.parse(JSON.stringify(store.rootDataDict[_treeNode.name]));
+    if (store.operation === "getBeDependencies") switchChildren(fileData);
+    const children = fileData.children;
 
     if (children.length) {
       children.forEach((_childName) => {
@@ -99,18 +81,4 @@ function getTreeData() {
   genOptions(tree[0]);
 
   return tree;
-}
-
-function getColor(_url) {
-  if (/.js$/.test(_url)) {
-    return "rgb(255, 221, 0)";
-  }
-
-  if (/^\/page/.test(_url)) {
-    return "rgb(0, 174, 255)";
-  }
-
-  if (/^\/components/.test(_url)) {
-    return "rgb(51, 190, 58)";
-  }
 }

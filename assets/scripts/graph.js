@@ -26,8 +26,6 @@ function graphInit() {
     },
   };
 
-  console.log(options);
-
   chart.setOption(options);
 }
 

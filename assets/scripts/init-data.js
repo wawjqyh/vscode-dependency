@@ -30,3 +30,25 @@ function initData() {
     }
   });
 }
+
+function getColor(_url) {
+  if (/.js$/.test(_url)) {
+    return "rgb(255, 221, 0)";
+  }
+
+  if (/^\/page/.test(_url)) {
+    return "rgb(0, 174, 255)";
+  }
+
+  if (/^\/components/.test(_url)) {
+    return "#65b687";
+  }
+}
+
+function switchChildren(_fileInfo) {
+  const children = _fileInfo.children;
+  const parent = _fileInfo.parent;
+
+  _fileInfo.children = parent;
+  _fileInfo.parent = children;
+}
