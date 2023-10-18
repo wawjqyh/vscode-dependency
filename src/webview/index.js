@@ -6,7 +6,7 @@ const config = require("../config");
 /**
  * 查看废弃的文件
  */
-async function webviewDisused() {
+async function webviewDisused(context) {
   try {
     const dataStr = await getDependencyData();
 
@@ -23,11 +23,24 @@ async function webviewDisused() {
     );
 
     // 设置HTML内容
-    panel.webview.html = getWebviewContent(
-      panel,
-      null,
-      "getDisused",
-      dataStr
+    panel.webview.html = getWebviewContent(panel, null, "getDisused", dataStr);
+
+    // 监听 webview 传出来的事件
+    panel.webview.onDidReceiveMessage(
+      async (message) => {
+        try {
+          if (message.command === "openFile") {
+            await vscode.commands.executeCommand(
+              "vscode.openFolder",
+              vscode.Uri.file(message.url)
+            );
+          }
+        } catch (err) {
+          vscode.window.showErrorMessage("无法打开文件");
+        }
+      },
+      undefined,
+      context.subscriptions
     );
   } catch (err) {
     console.log(err);
@@ -41,7 +54,7 @@ async function webviewDisused() {
  * @param {*} operation 操作，查看依赖/被依赖
  * @returns
  */
-async function webviewDependency(uri, operation) {
+async function webviewDependency(context, uri, operation) {
   try {
     const filePath = uri.path;
     const fileInfo = await fsUtils.getFileData(filePath);
@@ -76,13 +89,31 @@ async function webviewDependency(uri, operation) {
       operation,
       dataStr
     );
+
+    // 监听 webview 传出来的事件
+    panel.webview.onDidReceiveMessage(
+      async (message) => {
+        try {
+          if (message.command === "openFile") {
+            await vscode.commands.executeCommand(
+              "vscode.openFolder",
+              vscode.Uri.file(message.url)
+            );
+          }
+        } catch (err) {
+          vscode.window.showErrorMessage("无法打开文件");
+        }
+      },
+      undefined,
+      context.subscriptions
+    );
   } catch (err) {
     console.log(err);
     vscode.window.showErrorMessage("查看依赖关系失败！");
   }
 }
 
-async function getDependencyData() {
+async function getDependencyData(context) {
   try {
     // 判断依赖关系文件是否存在，并读取
     const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
@@ -123,7 +154,15 @@ function getWebviewContent(panel, target, operation, dataStr) {
       <link rel="stylesheet" type="text/css" href="${staticPath}/css/index.css" />
     </head>
     <body>
-      <div id="chart"></div>
+      <div class="chart-wrapper" 
+        style="${operation === "getDisused" ? "display: none" : ""}">
+        <div id="chart"></div>
+      </div>
+
+      <div class="disused-wrapper"
+        style="${operation === "getDisused" ? "" : "display: none"}">
+        <ul id="disused"></ul>
+      </div>
 
       <script>
         const store = {
@@ -137,6 +176,9 @@ function getWebviewContent(panel, target, operation, dataStr) {
       </script>
       <script src="${staticPath}/scripts/echarts.min.js"></script>
       <script src="${staticPath}/scripts/init-data.js"></script>
+      <script src="${staticPath}/scripts/disused.js"></script>
+      <script src="${staticPath}/scripts/tree.js"></script>
+      <script src="${staticPath}/scripts/graph.js"></script>
       <script src="${staticPath}/scripts/sankey.js"></script>
       <script src="${staticPath}/scripts/index.js"></script>
     </body>

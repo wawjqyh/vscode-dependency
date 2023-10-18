@@ -24,12 +24,20 @@
       {
         "command": "dependency.cmdGetDependencies",
         "title": "查看依赖"
+      },
+      {
+        "command": "dependency.cmdGetBeDependencies",
+        "title": "查看被依赖"
       }
     ],
     "menus": {
       "explorer/context": [
 				{
 					"command": "dependency.cmdGetDependencies",
+					"group": "navigation"
+				},
+        {
+					"command": "dependency.cmdGetBeDependencies",
 					"group": "navigation"
 				}
 			]
