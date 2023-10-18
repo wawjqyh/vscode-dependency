@@ -8,9 +8,16 @@ const cmdAnalyzeDependencies = vscode.commands.registerCommand(
   dependency.analyses
 );
 
+// 查看废弃的文件
+const cmdGetDisused = vscode.commands.registerCommand(
+  "dependency.cmdGetDisused",
+  webview.webviewDisused
+);
+
+// 查看依赖关系
 const cmdGetDependencies = vscode.commands.registerCommand(
   "dependency.cmdGetDependencies",
-  uri => {
+  (uri) => {
     webview.webviewDependency(uri, "getDependencies");
   }
 );
@@ -18,5 +25,5 @@ const cmdGetDependencies = vscode.commands.registerCommand(
 module.exports = {
   cmdAnalyzeDependencies,
   cmdGetDependencies,
-  commands: [cmdAnalyzeDependencies, cmdGetDependencies],
+  commands: [cmdAnalyzeDependencies, cmdGetDisused, cmdGetDependencies],
 };

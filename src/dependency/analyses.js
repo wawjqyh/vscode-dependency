@@ -32,6 +32,7 @@ async function start() {
             "./.dependency/dependency.json"
           );
 
+          // 从入口递归遍历文件夹下的文件
           for (const entry of entryList) {
             const dirAbsPath = path.join(workspacePath, entry); // 入口的绝对路径
             const isExists = fsUtils.checkPathExists(dirAbsPath); // 判断入口是否存在
@@ -90,7 +91,7 @@ async function analysesDir(_dirInfo, _list) {
       );
 
       if (dependency) {
-        fileInfo.dependency = dependency;
+        fileInfo.children = dependency;
       }
 
       _list.push(fileInfo);

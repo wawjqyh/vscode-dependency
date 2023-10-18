@@ -18,6 +18,10 @@
         "title": "analyze dependencies"
       },
       {
+        "command": "dependency.cmdGetDisused",
+        "title": "get disused"
+      },
+      {
         "command": "dependency.cmdGetDependencies",
         "title": "查看依赖"
       }
