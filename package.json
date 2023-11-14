@@ -1,14 +1,14 @@
 {
-  "name": "dependency",
+  "name": "nuxt-dependency-graph",
   "displayName": "nuxt dependency graph",
   "description": "nuxt dependency graph",
   "repository": "https://github.com/wawjqyh/vscode-dependency",
   "homepage": "https://github.com/wawjqyh/vscode-dependency",
-  "publisher": "hans.qiu",
+  "publisher": "wawjqyh",
   "version": "1.1.1",
   "license": "MIT",
   "engines": {
-    "vscode": "^1.81.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"

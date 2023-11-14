@@ -2,7 +2,7 @@
 
 查看文件的依赖和被依赖关系，目前版本支持 nuxt2
 
-入口配置了 `config` `layouts` `middleware` `modules` `plugins` `/components` `/pages`，支持 `js` 和 `vue` 文件
+入口配置了 `/config`、 `/layouts`、 `/middleware`、 `/modules`、 `/plugins`、 `/components`、 `/pages`，支持 `js` 和 `vue` 文件
 
 支持查看以上目录下文件的依赖关系
 
