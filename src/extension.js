@@ -1,7 +1,10 @@
-const cmd = require("./src/command");
+const cmd = require("./command");
+const config = require("./config");
 
 function activate(context) {
   console.log("插件激活");
+
+  config.setAssetsPath(context.extensionPath);
 
   cmd.commands.forEach((command) => {
     const cmd = command(context);

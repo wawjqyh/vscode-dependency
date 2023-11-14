@@ -198,7 +198,7 @@ function getWebviewContent(panel, target, operation, dataStr) {
  * @returns
  */
 function getStaticPath(panel) {
-  const onDiskPath = vscode.Uri.file(config.assetsPath);
+  const onDiskPath = vscode.Uri.file(config.getAssetsPath());
 
   return panel.webview.asWebviewUri(onDiskPath).toString();
 }

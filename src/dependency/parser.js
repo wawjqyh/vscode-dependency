@@ -14,31 +14,47 @@ let resolve = null;
  * @param { String } _ext
  */
 async function getDependency(_absPath, _ext) {
-  const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
-  let importList = [];
-  const content = await fsUtils.readFile(_absPath); // 读取文件内容
-  const codeString = content.toString();
+  try {
+    const workspacePath = fsUtils.getWorkspacePath(); // 当前项目的绝对路径
+    let importList = [];
+    const content = await fsUtils.readFile(_absPath); // 读取文件内容
+    const codeString = content.toString();
 
-  if (_ext === ".vue") {
-    importList = vueParser(codeString); // 解析 vue
-  }
-  if (_ext === ".js") {
-    importList = jsParser(codeString);
-  }
-
-  // 将依赖项的地址转成绝对地址
-  const dependencies = importList.reduce((res, item) => {
-    const itemAbsPath = resolvePath(item, _absPath);
-
-    // 不记录第三方包 | 非配置的入口目录下的文件
-    if (item && itemAbsPath && !itemAbsPath.includes("node_modules") && fsUtils.checkInEntry(itemAbsPath)) {
-      res.push(itemAbsPath.replace(workspacePath, ""));
+    if (_ext === ".vue") {
+      importList = vueParser(codeString); // 解析 vue
+    }
+    if (_ext === ".js") {
+      importList = jsParser(codeString);
     }
 
-    return res;
-  }, []);
+    // 将依赖项的地址转成绝对地址
+    const dependencies = importList.reduce((res, item) => {
+      const itemAbsPath = resolvePath(item, _absPath);
+      const ext = path.extname(_absPath).toLowerCase();
 
-  return dependencies;
+      if (item && itemAbsPath) {
+        // 校验配置的文件类型
+        if (fsUtils.checkFileType(ext)) {
+          // 不记录第三方包
+          if (!itemAbsPath.includes("node_modules")) {
+            // 非配置的入口目录下的文件
+            if (fsUtils.checkInEntry(itemAbsPath)) {
+              res.push(itemAbsPath.replace(workspacePath, ""));
+            }
+          }
+        }
+      }
+
+      return res;
+    }, []);
+
+    return dependencies;
+  } catch (err) {
+    console.log(err.message);
+    console.log(_absPath);
+  }
+
+  return [];
 }
 
 /**
@@ -55,7 +71,7 @@ function vueParser(_codeString) {
 
     return dependencies;
   } catch (err) {
-    return Promise.reject(new Error({ msg: "vue 解析失败" }));
+    throw new Error("vue 解析失败");
   }
 }
 
@@ -82,11 +98,36 @@ function jsParser(_codeString) {
 
         return false;
       },
+
+      // 动态引用 import()
+      visitCallExpression(nodePath) {
+        try {
+          const node = nodePath.value;
+
+          if (
+            node?.callee?.type === "Import" ||
+            node?.callee?.name === "require"
+          ) {
+            if (
+              node.arguments?.length &&
+              node.arguments[0]?.type === "StringLiteral"
+            ) {
+              const importPath = node.arguments[0]?.value || "";
+
+              if (importPath) dependencies.push(importPath);
+            }
+          }
+        } catch (err) {
+          console.log("获取 js 依赖失败");
+        }
+
+        return false;
+      },
     });
 
     return dependencies;
   } catch (err) {
-    return Promise.reject(new Error({ msg: "js 解析失败" }));
+    throw new Error("js 解析失败");
   }
 }
 

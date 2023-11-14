@@ -1,11 +1,11 @@
 {
   "name": "dependency",
-  "displayName": "dependency",
-  "description": "dependency graph",
+  "displayName": "nuxt dependency graph",
+  "description": "nuxt dependency graph",
   "repository": "https://github.com/wawjqyh/vscode-dependency",
   "homepage": "https://github.com/wawjqyh/vscode-dependency",
   "publisher": "hans.qiu",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "license": "MIT",
   "engines": {
     "vscode": "^1.81.0"
@@ -16,7 +16,7 @@
   "activationEvents": [
     "onStartupFinished"
   ],
-  "main": "./extension.js",
+  "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
@@ -50,21 +50,19 @@
     }
   },
   "scripts": {
-    "lint": "eslint .",
-    "pretest": "npm run lint",
-    "test": "node ./test/runTest.js",
+    "build": "node ./build/build.js",
     "package": "vsce package"
   },
-  "dependencies": {
+  "devDependencies": {
     "@babel/parser": "^7.21.4",
     "enhanced-resolve": "^5.12.0",
     "recast": "^0.22.0",
     "vue": "2.6.12",
-    "vue-template-compiler": "2.6.12"
-  },
-  "devDependencies": {
+    "vue-template-compiler": "2.6.12",
     "@vscode/test-electron": "^2.3.2",
     "@vscode/vsce": "^2.21.1",
-    "eslint": "^8.41.0"
+    "eslint": "^8.41.0",
+    "webpack": "^5.89.0",
+    "json-loader": "^0.5.7"
   }
 }
