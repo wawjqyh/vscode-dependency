@@ -8,9 +8,10 @@ function disusedInit() {
 function getDisused() {
   const used = new Set();
   const disused = [];
+  /* 过滤非 components 下的文件 */
   const pages = store.rootData
     .filter((_item) => {
-      return /^\/pages/.test(_item.relativePath);
+      return !/^\/components/.test(_item.relativePath);
     })
     .map((_item) => {
       return _item.relativePath;

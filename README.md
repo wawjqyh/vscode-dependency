@@ -1,10 +1,10 @@
-# dependency
+# Nuxt dependency graph
 
-查看文件的依赖和被依赖关系
+查看文件的依赖和被依赖关系，目前版本支持 nuxt2
 
-目前版本支持 nuxt2，相关的配置是写死的
+入口配置了 `config` `layouts` `middleware` `modules` `plugins` `/components` `/pages`，支持 `js` 和 `vue` 文件
 
-入口配置了 `/components` 和 `/pages`，支持查看这两个目录下文件的依赖关系
+支持查看以上目录下文件的依赖关系
 
 ## 功能
 
@@ -14,6 +14,6 @@
 
 ## 使用
 
-使用前或者有增删文件时，先使用 `analyze dependencies` 生成依赖关系文件
+使用前或者有增删文件时，先使用 `analyze dependencies` 命令生成依赖关系文件
 
 这个文件保存在 `.dependency` 目录下，查看依赖关系时不会实时的获取依赖关系，而是从预先生成的依赖关系文件里面读取
