@@ -17,6 +17,8 @@ function initData() {
       children.forEach((_key) => {
         const childFileItem = store.rootDataDict[_key];
 
+        if (!childFileItem) return;
+
         if (!childFileItem.parent) childFileItem.parent = [];
 
         const isExists = childFileItem.parent.some(

@@ -22,7 +22,7 @@ function treeInit() {
       },
       nodeGap: 10,
       expandAndCollapse: true,
-      initialTreeDepth: 3,
+      initialTreeDepth: 2,
       lineStyle: {
         color: "#666",
       },
